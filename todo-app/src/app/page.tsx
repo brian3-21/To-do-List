@@ -1,35 +1,67 @@
-'use client';
-import { useState } from 'react';
-import { Button } from '../components/ui/Button';
+"use client"
+import Button from '../components/ui/Button';
+import { useRef, useState, KeyboardEvent } from 'react';
 
-export default function Home() {
+export default function Counter() {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [count, setCount] = useState<number>(0);
+  const [accumulatedValue, setAccumulatedValue] = useState<number>(0);
 
-  const [counter, setCounter] = useState(0);
+  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      const inputValue = Number(inputRef.current?.value) || 0;
+      setAccumulatedValue(inputValue);
+    }
+  };
 
-  function incrementCounter(){
-    setCounter(counter + 1);
-    console.log("el contador es: ",counter)
-  }
-  function decrementCounter(){
-    setCounter(counter - 1);
-    console.log("el contador es: ",counter)
-  }
+  function increment() {
+    if(accumulatedValue == 0){
+    }
+    setCount(count + accumulatedValue);
+  };
+  const decrement = () => setCount((prev) => prev - accumulatedValue);
+  const reset = () => {
+    setCount(0);
+    setAccumulatedValue(0);
+  };
 
   return (
-      <div className="h-screen flex flex-col items-center justify-center text-gray-900 dark:text-white">
-        <h1 className="text-[12rem] leading-none">Hola Tanque</h1> {/* leading-none elimina espacio entre líneas */}
-        <p className="text-[6rem]">El contador es: {counter}</p>
-        <form className="max-w-sm mx-auto">
-          <label htmlFor="number-input" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Select a number:</label>
-          <input onSubmit={ ev =>{ev.preventDefault();console.log(ev.currentTarget.value)}} type="number" id="number-input" aria-describedby="helper-text-explanation" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="xxxxxxx" required />
-        </form  >
-        <Button variant="danger" size="md" onClick={incrementCounter} >
-        +
-        </Button>
-        <Button variant="danger" size="md" onClick={decrementCounter} >
-        -
-        </Button>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
+      <div className="w-full max-w-md bg-white rounded-xl shadow-lg overflow-hidden p-6">
+        {/* Título */}
+        <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">
+          Contador 
+        </h1>
+
+        {/* Display del contador */}
+        <div className="bg-gray-50 p-6 rounded-lg mb-6 shadow-inner">
+          <span className="block text-5xl font-bold text-center text-indigo-600">
+            {count}
+          </span>
+          <small className="block text-center text-gray-500 mt-2">
+            Valor acumulado: {accumulatedValue}
+          </small>
+        </div>
+
+        {/* Input */}
+        {/* Input */}
+        <input
+          type="number"
+          ref={inputRef}
+          onKeyDown={handleKeyDown}
+          placeholder="Ingresa un número y presiona Enter"
+          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition mb-6 text-gray-900 placeholder-gray-900" /* Añadido text-gray-900 */
+        />
+
+        {/* Botones */}
+        <div className="flex flex-col sm:flex-row gap-3">
+          <Button name="Incrementar" handleClick={increment} />
+          <Button name="Decrementar" handleClick={decrement} />
+          <Button name="Reiniciar"   handleClick={reset} />
+        </div>
+        
       </div>
-      
+    </div>
   );
 }
